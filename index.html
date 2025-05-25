@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>藤田镇便民服务中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#FF7D00',
+                        dark: '#0F3AAA',
+                        light: '#E8F3FF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 10px 25px -5px rgba(22, 93, 255, 0.1), 0 8px 10px -6px rgba(22, 93, 255, 0.1);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(22, 93, 255, 0.1), 0 10px 10px -5px rgba(22, 93, 255, 0.04);
+            }
+            .btn-hover {
+                transition: all 0.3s ease;
+            }
+            .btn-hover:hover {
+                transform: translateY(-2px);
+            }
+            .nav-scrolled {
+                background-color: rgba(255, 255, 255, 0.95);
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+        }
+    </style>
+    <!-- 添加下载提示的CSS样式 -->
+    <style>
+        .download-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            border-radius: 4px;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .download-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .download-toast i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800">
+    <!-- 导航栏 -->
+    <header id="navbar" class="fixed w-full top-0 z-50 transition-all duration-300 py-4">
+        <div class="container mx-auto px-4 md:px-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex justify-between items-center w-full md:w-auto">
+                <div class="flex items-center">
+                    <span class="text-primary font-bold text-xl md:text-2xl">藤田镇人民政府</span>
+                </div>
+                <button id="menu-toggle" class="md:hidden text-gray-800 focus:outline-none">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+            <nav id="main-nav" class="hidden md:flex items-center mt-4 md:mt-0">
+                <a href="#home" class="text-gray-700 hover:text-primary px-4 py-2 transition-colors">首页</a>
+                <a href="#news" class="text-gray-700 hover:text-primary px-4 py-2 transition-colors">政务速递</a>
+                <a href="#services" class="text-gray-700 hover:text-primary px-4 py-2 transition-colors">服务直达</a>
+                <a href="#contact" class="text-gray-700 hover:text-primary px-4 py-2 transition-colors">联系我们</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 移动端菜单 -->
+    <div id="mobile-menu"
+        class="fixed inset-0 bg-primary bg-opacity-95 z-50 transform translate-x-full transition-transform duration-300 md:hidden">
+        <div class="container mx-auto px-6 py-8 flex flex-col h-full">
+            <div class="flex justify-between items-center mb-10">
+                <div class="flex items-center">
+                    <i class="fa fa-building-o text-white text-3xl mr-3"></i>
+                    <span class="text-white font-bold text-xl">藤田镇人民政府</span>
+                </div>
+                <button id="close-menu" class="text-white focus:outline-none">
+                    <i class="fa fa-times text-2xl"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col space-y-6 text-center">
+                <a href="#home"
+                    class="text-white hover:text-secondary text-xl px-4 py-3 transition-colors rounded-md">首页</a>
+                <a href="#news"
+                    class="text-white hover:text-secondary text-xl px-4 py-3 transition-colors rounded-md">政务速递</a>
+                <a href="#services"
+                    class="text-white hover:text-secondary text-xl px-4 py-3 transition-colors rounded-md">服务直达</a>
+                <a href="#contact"
+                    class="text-white hover:text-secondary text-xl px-4 py-3 transition-colors rounded-md">联系我们</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- 英雄区域 -->
+    <section id="home" class="pt-32 pb-20 md:pt-40 md:pb-32 bg-gradient-to-br from-primary to-dark text-white">
+        <div class="container mx-auto px-4 md:px-6 text-center">
+            <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold mb-4">藤田镇便民服务中心</h1>
+            <p class="text-[clamp(1rem,2vw,1.25rem)] max-w-3xl mx-auto mb-8 opacity-90">
+                藤田·军运会摇篮 欢迎您！为您提供高效、便捷的政务服务和公共服务，让您办事更省心、更舒心。
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-10">
+                <a href="#news"
+                    class="bg-white text-primary px-8 py-3 rounded-lg font-medium hover:bg-light transition-colors btn-hover">
+                    政务速递 <i class="fa fa-arrow-right ml-2"></i>
+                </a>
+                <a href="#services"
+                    class="bg-secondary text-white px-8 py-3 rounded-lg font-medium hover:bg-opacity-90 transition-colors btn-hover">
+                    服务直达 <i class="fa fa-bolt ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 政务速递 -->
+    <section id="news" class="py-20 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">政务速递</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">了解最新的政府信息、工作动态和活动安排，掌握政务资讯。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 政府信息等您来查阅 -->
+                <div class="bg-white rounded-xl overflow-hidden card-shadow card-hover">
+                    <div class="h-48 bg-primary bg-opacity-10 flex items-center justify-center">
+                        <i class="fa fa-newspaper-o text-primary text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">政府信息等您来查阅</h3>
+                        <p class="text-gray-600 mb-6">查阅政府公开信息、政策法规、统计数据等资料，了解政府工作动态。</p>
+                        <div class="space-y-4">
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-gfxwjiribxe.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-book text-secondary mr-3"></i>
+                                <span>政策文件</span>
+                            </a>
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-zdlyxxpa.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-bullhorn text-secondary mr-3"></i>
+                                <span>重点领域工作信息</span>
+                            </a>
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-zhengcejieduBvfty3.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-comment text-secondary mr-3"></i>
+                                <span>政策解读</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 政府工作等您来了解 -->
+                <div class="bg-white rounded-xl overflow-hidden card-shadow card-hover">
+                    <div class="h-48 bg-primary bg-opacity-10 flex items-center justify-center">
+                        <i class="fa fa-briefcase text-primary text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">政府工作等您来了解</h3>
+                        <p class="text-gray-600 mb-6">查阅政府工作报告、了解重点项目建设、民生工程进展等工作情况。</p>
+                        <div class="space-y-4">
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-zfxxgkgzndbgkjtzwj.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-book text-secondary mr-3"></i>
+                                <span>政府工作报告</span>
+                            </a>
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-gggshmswaq.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-bullhorn text-secondary mr-3"></i>
+                                <span>公告公示</span>
+                            </a>
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-gqzdtx.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-cogs text-secondary mr-3"></i>
+                                <span>aeda签署落实</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 政府活动等您来参与 -->
+                <div class="bg-white rounded-xl overflow-hidden card-shadow card-hover">
+                    <div class="h-48 bg-primary bg-opacity-10 flex items-center justify-center">
+                        <i class="fa fa-users text-primary text-6xl"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">政府活动等您来参与</h3>
+                        <p class="text-gray-600 mb-6">参与政府组织的各类活动，提出您的建议和意见，共同建设美好藤田。</p>
+                        <div class="space-y-4">
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-ysqgkezamgh.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-file-text-o text-secondary mr-3"></i>
+                                <span>依申请公开</span>
+                            </a>
+                            <a href="https://12345.jian.gov.cn/" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-phone text-secondary mr-3"></i>
+                                <span>政务服务便民热线</span>
+                            </a>
+                            <a href="http://www.jxyongfeng.gov.cn/xxgk-list-zdjcydgka.html" target="_blank"
+                                class="flex items-center text-primary hover:text-dark transition-colors">
+                                <i class="fa fa-gavel text-secondary mr-3"></i>
+                                <span>重大决策预公开</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服务直达 -->
+    <section id="services" class="py-20 bg-light">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">服务直达</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">提供便捷的在线服务和办事指南，让您足不出户就能了解各类事项</p>
+            </div>
+
+            <!-- 高效办成一件事服务专区 -->
+            <div class="bg-white rounded-xl overflow-hidden card-shadow mb-16">
+                <div class="p-8 md:p-10">
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-2/3 mb-8 md:mb-0 md:pr-10">
+                            <h3 class="text-2xl font-bold text-gray-800 mb-4">高效办成一件事服务专区</h3>
+                            <p class="text-gray-600 mb-6">加快效率办成一件事，一套申请· 一套材料·一次提交·一窗受理·一网通办</p>
+                            <a href="https://www.jxzwfww.gov.cn/col/col73424/index.html?flag=gj" target="_blank"
+                                class="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-dark transition-colors btn-hover">
+                                进入专区 <i class="fa fa-external-link ml-2"></i>
+                            </a>
+                        </div>
+                        <div class="md:w-1/3">
+                            <div class="bg-primary bg-opacity-10 rounded-lg p-6 text-center">
+                                <i class="fa fa-rocket text-primary text-5xl mb-4"></i>
+                                <p class="font-medium text-gray-800">全国一体化在线政务服务平台-江西政务服务网</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 文档下载 -->
+            <!-- 文档下载部分 - 修正文件对应关系 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <a href="javascript:void(0);" onclick="downloadFile('docx/藤田镇（公共服务）事项可帮代办清单及队伍人员名单.docx')"
+                    class="bg-white rounded-lg p-6 flex items-center card-shadow card-hover">
+                    <div class="bg-primary bg-opacity-10 p-4 rounded-lg mr-4">
+                        <i class="fa fa-file-word-o text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">帮代办服务</h4>
+                        <p class="text-sm text-gray-600">了解帮代办服务，查询服务事项、联系服务队伍</p>
+                    </div>
+                </a>
+
+                <a href="javascript:void(0);" onclick="downloadFile('docx/藤田镇承接江西省服务乡镇、经济发达镇县级经济社会管理权限承接事项目录107+146.xlsx')"
+                    class="bg-white rounded-lg p-6 flex items-center card-shadow card-hover">
+                    <div class="bg-primary bg-opacity-10 p-4 rounded-lg mr-4">
+                        <i class="fa fa-file-excel-o text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">赋权事项清单</h4>
+                        <p class="text-sm text-gray-600">查看我镇承接赋权事项详细清单</p>
+                    </div>
+                </a>
+
+                <a href="javascript:void(0);" onclick="downloadFile('docx/藤田镇41项公共服务事项清单.docx')"
+                    class="bg-white rounded-lg p-6 flex items-center card-shadow card-hover">
+                    <div class="bg-primary bg-opacity-10 p-4 rounded-lg mr-4">
+                        <i class="fa fa-file-text-o text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">公共服务事项清单</h4>
+                        <p class="text-sm text-gray-600">查看公共服务事项详细清单</p>
+                    </div>
+                </a>
+
+                <a href="javascript:void(0);" onclick="downloadFile('docx/（藤田）89项乡镇统一行政权力事项清单.docx')"
+                    class="bg-white rounded-lg p-6 flex items-center card-shadow card-hover">
+                    <div class="bg-primary bg-opacity-10 p-4 rounded-lg mr-4">
+                        <i class="fa fa-file-word-o text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">统一行政权力清单</h4>
+                        <p class="text-sm text-gray-600">查看镇级行政权力详细清单</p>
+                    </div>
+                </a>
+
+                <a href="javascript:void(0);" onclick="downloadFile('docx/藤田镇入驻便民服务中心事项清单及办事指南.docx')"
+                    class="bg-white rounded-lg p-6 flex items-center card-shadow card-hover">
+                    <div class="bg-primary bg-opacity-10 p-4 rounded-lg mr-4">
+                        <i class="fa fa-file-text-o text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">入驻便民服务中心事项清单及办事指南</h4>
+                        <p class="text-sm text-gray-600">查看服务中心入驻事项及详细办事指南</p>
+                    </div>
+                </a>
+
+                <a href="javascript:void(0);" onclick="downloadFile('docx/藤田镇便民服务中心高频服务事项及办理指南.docx')"
+                    class="bg-white rounded-lg p-6 flex items-center card-shadow card-hover">
+                    <div class="bg-primary bg-opacity-10 p-4 rounded-lg mr-4">
+                        <i class="fa fa-file-word-o text-primary text-2xl"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-800">高频事项及办理指南</h4>
+                        <p class="text-sm text-gray-600">查看高频服务事项及详细指南</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系我们 -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-gray-800 mb-4">联系我们</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">如有任何疑问或需要帮助，请随时联系我们</p>
+            </div>
+
+            <div class="bg-primary bg-opacity-5 rounded-xl p-8 md:p-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg p-6 card-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-3">
+                                <i class="fa fa-map-marker text-primary"></i>
+                            </div>
+                            <h3 class="font-bold text-gray-800">地址</h3>
+                        </div>
+                        <p class="text-gray-600">藤田镇人民政府便民服务中心</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 card-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-3">
+                                <i class="fa fa-phone text-primary"></i>
+                            </div>
+                            <h3 class="font-bold text-gray-800">电话</h3>
+                        </div>
+                        <p class="text-gray-600">0796-2531929</p>
+                        <p class="text-gray-600">0796-2531012</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 card-shadow">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-primary bg-opacity-10 p-3 rounded-full mr-3">
+                                <i class="fa fa-clock-o text-primary"></i>
+                            </div>
+                            <h3 class="font-bold text-gray-800">服务时间</h3>
+                        </div>
+                        <p class="text-gray-600">上午：8:30-12:00</p>
+                        <p class="text-gray-600">下午：14:00-17:00</p>
+                        <p class="text-gray-600">工作日12:00-14:00提供延时服务</p>
+                        <p class="text-gray-600">双休日及法定节假日提供错时预约服务</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center">
+                        <i class="fa fa-building-o text-white text-2xl mr-3"></i>
+                        <span class="font-bold text-xl">藤田镇人民政府</span>
+                    </div>
+                    <p class="text-gray-400 mt-2">藤田镇便民服务中心</p>
+                </div>
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400 mb-2">© 2025 藤田镇人民政府 版权所有</p>
+                    <p class="text-gray-500 text-sm">网站建设维护：藤田镇人民政府</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="back-to-top"
+        class="fixed bottom-6 right-6 bg-primary text-white p-3 rounded-full shadow-lg opacity-0 invisible transition-all duration-300 hover:bg-dark focus:outline-none">
+        <i class="fa fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        const backToTop = document.getElementById('back-to-top');
+    
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-scrolled');
+                navbar.classList.remove('py-4');
+                navbar.classList.add('py-2');
+            } else {
+                navbar.classList.remove('nav-scrolled');
+                navbar.classList.remove('py-2');
+                navbar.classList.add('py-4');
+            }
+    
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+    
+        // 回到顶部功能
+        backToTop.addEventListener('click', function () {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    
+        // 平滑滚动导航
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+    
+                // 关闭移动端菜单（如果打开）
+                if (!mobileMenu.classList.contains('translate-x-full')) {
+                    toggleMobileMenu();
+                }
+    
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+    
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    
+        // 移动端菜单
+        const menuToggle = document.getElementById('menu-toggle');
+        const closeMenu = document.getElementById('close-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+    
+        function toggleMobileMenu() {
+            mobileMenu.classList.toggle('translate-x-full');
+        }
+    
+        menuToggle.addEventListener('click', toggleMobileMenu);
+        closeMenu.addEventListener('click', toggleMobileMenu);
+    
+        // 移动端菜单项点击关闭菜单
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', toggleMobileMenu);
+        });
+    
+        // 添加下载功能
+        function downloadFile(filePath) {
+            try {
+                // 创建下载链接
+                const downloadLink = document.createElement('a');
+                downloadLink.href = filePath;
+                downloadLink.download = filePath.split('/').pop();
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+                
+                // 显示下载提示
+                showDownloadToast(filePath.split('/').pop());
+            } catch (error) {
+                console.error('下载文件时出错:', error);
+                alert('下载文件失败，请稍后再试');
+            }
+        }
+        
+        // 显示下载提示
+        function showDownloadToast(fileName) {
+            // 创建提示元素
+            const toast = document.createElement('div');
+            toast.className = 'download-toast';
+            toast.innerHTML = `<i class="fa fa-check-circle"></i> 文件 "${fileName}" 开始下载`;
+            
+            // 添加到页面
+            document.body.appendChild(toast);
+            
+            // 显示提示
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 10);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
